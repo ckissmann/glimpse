@@ -7,8 +7,6 @@ use std::process::Command;
 fn get_random_color(text: &str) -> String {
     let color_index = rand::random_range(0..8);
 
-    // let color_index = rng.r(0..8);
-
     let colored_text = match color_index {
         0 => text.red(),
         1 => text.green(),
