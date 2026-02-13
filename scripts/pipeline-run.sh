@@ -8,7 +8,6 @@ cd "$(dirname "$0")" || exit
 cd ".." || exit
 
 cargo install cargo-zigbuild
-cargo build --release --locked 
 
 cd scripts || exit
 
