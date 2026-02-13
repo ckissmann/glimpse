@@ -56,7 +56,7 @@ B               | branch-b
 ## Requirements
 
 - Git installed on your system
-- Unix-like environment (Linux, macOS, WSL)
+- cross-platform environment (Linux, macOS, WSL, Windows)
 
 ## Contributing
 
