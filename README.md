@@ -1,5 +1,5 @@
 # glimpse
-t
+
 A simple command-line tool to view Git branches across multiple repositories in subfolders.
 
 ![glimpse demo](https://raw.githubusercontent.com/yourusername/glimpse/main/demo.png)
