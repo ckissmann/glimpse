@@ -22,6 +22,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - uses: mlugg/setup-zig@v2
+    - run: zig init
+    - name: Build
+      run: sh ./scripts/pipeline-run.sh
     - name: Generate release tag
       id: generate_release_tag
       uses: amitsingh-007/next-release-tag@v4.0.0
