@@ -18,7 +18,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: mlugg/setup-zig
+    - uses: https://codeberg.org/mlugg/setup-zig@v2
+    - run: zig build test
     - name: Build
       run: cargo install cargo-zigbuild && cargo build --release --locked && sh ./scripts/compile-all.sh
     - name: Upload binaries to release
