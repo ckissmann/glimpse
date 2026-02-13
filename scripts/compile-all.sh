@@ -131,13 +131,6 @@ for target in $TARGETS; do
         *) name="$target" ;;
     esac
     
-    echo "${YELLOW}🔨 Rustup add ($target)...${NC}"
-    rustup target add "$target"
-
-    result=$?
-
-    echo "${YELLOW}🔨 Rustup add result ($target)...${NC} -> state: $result"
-
     echo "${YELLOW}🔨 Building $name ($target)...${NC}"
     
     if cargo zigbuild --release --target "$target" 2>&1 | grep -q "Finished"; then
