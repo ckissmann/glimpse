@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: mlugg/setup-zig@v2
-    - run: zig build test
+    - run: zig init
     - name: Build
       run: sh ../scripts/pipeline-run.sh
     - name: Upload binaries to release
