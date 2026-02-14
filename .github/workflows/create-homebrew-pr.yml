@@ -1,0 +1,108 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: homebrew-pr
+
+#on:
+#  push:
+#    branches: [ "release" ]
+
+on:
+  workflow_dispatch:
+    inputs:
+      homebrew-pr:
+        description: 'Is this a release?'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: write
+
+jobs:
+  # TODO: check why windows is not working
+  #windows-build: 
+  #  strategy:
+  #    matrix:
+  #      os: [windows-latest]
+  #
+  #  runs-on: windows-latest
+  #  steps:
+  #  - uses: actions/checkout@v3
+  #  - uses: mlugg/setup-zig@v2
+  #  - run: zig init
+  #  - name: Build windows
+  #    run: sh ./scripts/compile-all.sh --windows
+  #  - uses: actions/upload-artifact@v4
+  # with:
+  #    name: exe-files
+  #     path: dist/*.exe
+
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    # needs: windows-build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout homebrew-glimpse repository
+      uses: actions/checkout@v4
+      with:
+        repository: ckissmann/homebrew-glimpse
+        token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        path: homebrew-glimpse
+    - name: Update Formula
+      run: |
+        TAG="${{ steps.version.outputs.version }}"
+        VERSION="${{ steps.version.outputs.version_no_v }}"
+        URL="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
+          
+        URL_ARM="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
+        URL_AMD="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
+            
+
+        echo "📦 Tag: $TAG"
+        echo "📦 Version: $VERSION"
+        echo "📦 URL: $URL"
+          
+        # Download and calculate SHA256
+        echo "⏳ Calculating SHA256..."
+        SHA256=$(curl -sL "$URL" | shasum -a 256 | cut -d' ' -f1)
+        SHA256_ARM=$(curl -sL "$URL_ARM" | shasum -a 256 | cut -d' ' -f1)
+        SHA256_AMD=$(curl -sL "$URL_AMD" | shasum -a 256 | cut -d' ' -f1)
+        echo "🔐 SHA256: $SHA256"
+          
+        # Update formula file in the homebrew-glimpse repository
+        sed -i.bak "s|url \".*\"|url \"$URL\"|" homebrew-glimpse/Formula/glimpse.rb
+
+        sed -i.bak "5s|sha256 \".*\"|sha256 \"$SHA256\"|" homebrew-glimpse/Formula/glimpse.rb
+        sed -i "10s|sha256 \".*\"|sha256 \"$SHA256_ARM\"|" homebrew-glimpse/Formula/glimpse.rb
+        sed -i "13s|sha256 \".*\"|sha256 \"$SHA256_AMD\"|" homebrew-glimpse/Formula/glimpse.rb
+
+        sed -i.bak "s|version \".*\"|version \"$VERSION\"|" homebrew-glimpse/Formula/glimpse.rb
+        rm homebrew-glimpse/Formula/glimpse.rb.bak
+          
+        echo "✅ Formula updated!"
+    - name: Commit and push changes to homebrew-glimpse
+      run: |
+        cd homebrew-glimpse
+        
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+        if git diff --quiet Formula/glimpse.rb; then
+          echo "✅ No changes to commit"
+          exit 0
+        fi
+          
+        git add Formula/glimpse.rb
+
+        git checkout -B github-action-patch
+
+        git commit -m "chore: update formula to ${{ steps.version.outputs.version }}"
+        git push origin github-action-patch
+          
+        echo "✅ Pushed to homebrew-glimpse repository!"
