@@ -55,14 +55,14 @@ jobs:
       run: sh ./scripts/pipeline-run.sh
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-    - name: Download artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts  
-    - name: Organize files
-      run: |
-        find artifacts -type f -exec cp {} dist/ \;
-        ls -lh dist/
+    #- name: Download artifacts
+    #  uses: actions/download-artifact@v4
+    #  with:
+    #    path: artifacts  
+    #- name: Organize files
+    #  run: |
+    #    find artifacts -type f -exec cp {} dist/ \;
+    #    ls -lh dist/
     - name: Build DEB packages
       run: |
         mkdir -p dist/linux_amd64 dist/linux_arm64
