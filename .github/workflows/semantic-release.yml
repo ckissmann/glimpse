@@ -50,34 +50,55 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
+      - name: Extract version from release
+        id: version
+        run: |
+          # Get version from release tag name
+          VERSION="${{ github.event.release.tag_name }}"
+          # Remove 'v' prefix if exists
+          VERSION_NO_V="${VERSION#v}"
+          
+          echo "Full tag: $VERSION"
+          echo "Version without v: $VERSION_NO_V"
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_no_v=$VERSION_NO_V" >> $GITHUB_OUTPUT
+      
       - name: Update Formula
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          TAG=${GITHUB_REF#refs/tags/}
+          TAG="${{ steps.version.outputs.version }}"
+          VERSION="${{ steps.version.outputs.version_no_v }}"
           URL="https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.tar.gz"
           
-          echo "Updating formula for version $VERSION"
-          echo "URL: $URL"
+          echo "📦 Tag: $TAG"
+          echo "📦 Version: $VERSION"
+          echo "📦 URL: $URL"
           
           # Download and calculate SHA256
+          echo "⏳ Calculating SHA256..."
           SHA256=$(curl -sL "$URL" | shasum -a 256 | cut -d' ' -f1)
-          echo "SHA256: $SHA256"
+          echo "🔐 SHA256: $SHA256"
           
           # Update formula file
           sed -i.bak "s|url \".*\"|url \"$URL\"|" Formula/glimpse.rb
           sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" Formula/glimpse.rb
+          sed -i.bak "s|version \".*\"|version \"$VERSION\"|" Formula/glimpse.rb
           rm Formula/glimpse.rb.bak
           
+          echo "✅ Formula updated!"
+      
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           if git diff --quiet Formula/glimpse.rb; then
-            echo "No changes to commit"
+            echo "✅ No changes to commit"
             exit 0
           fi
           
           git add Formula/glimpse.rb
-          git commit -m "chore: update formula to ${GITHUB_REF#refs/tags/}"
+          git commit -m "chore: update formula to ${{ steps.version.outputs.version }}"
           git push
+          
+          echo "✅ Pushed to repository!"
