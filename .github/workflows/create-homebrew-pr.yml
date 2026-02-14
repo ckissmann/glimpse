@@ -49,7 +49,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - uses: mlugg/setup-zig@v2
+    - run: zig init
     - name: Get latest release tag
+      
       id: latest_release
       run: |
         TAG=$(gh release list --repo ${{ github.repository }} --limit 1 --json tagName --jq '.[0].tagName')
@@ -70,7 +73,7 @@ jobs:
         path: homebrew-glimpse
     - name: Update Formula
       run: |
-        TAG="${{ steps.latest_release.outputs.tag }}"
+        TAG="v${{ steps.latest_release.outputs.version_no_v }}"
         VERSION="${{ steps.latest_release.outputs.version_no_v }}"
         URL="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
           
