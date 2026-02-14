@@ -43,29 +43,41 @@ jobs:
           README.md
           SHA*
           dist/*.*
-    - name: Update Homebrew formula
-      env:
-        HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HOMEBREW_TOKEN }}
-      run: |
-          # Download release
+  update-formula:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Update Formula
+        run: |
           VERSION=${GITHUB_REF#refs/tags/v}
-          URL="https://github.com/ckissmann/archive/refs/tags/${GITHUB_REF#refs/tags/}.tar.gz"
+          TAG=${GITHUB_REF#refs/tags/}
+          URL="https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.tar.gz"
           
-          # Calculate SHA256
-          SHA256=$(curl -sL $URL | shasum -a 256 | cut -d' ' -f1)
+          echo "Updating formula for version $VERSION"
+          echo "URL: $URL"
           
-          # Clone homebrew tap
-          git clone https://github.com/ckissmann/glimpse
-          cd glimpse
+          # Download and calculate SHA256
+          SHA256=$(curl -sL "$URL" | shasum -a 256 | cut -d' ' -f1)
+          echo "SHA256: $SHA256"
           
-          # Update formula
-          sed -i "s|url \".*\"|url \"$URL\"|" Formula/glimpse.rb
-          sed -i "s|sha256 \".*\"|sha256 \"$SHA256\"|" Formula/glimpse.rb
+          # Update formula file
+          sed -i.bak "s|url \".*\"|url \"$URL\"|" Formula/glimpse.rb
+          sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" Formula/glimpse.rb
+          rm Formula/glimpse.rb.bak
           
-          # Commit and push
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          if git diff --quiet Formula/glimpse.rb; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
           git add Formula/glimpse.rb
-          git commit -m "Update to version $VERSION"
+          git commit -m "chore: update formula to ${GITHUB_REF#refs/tags/}"
           git push
-          
