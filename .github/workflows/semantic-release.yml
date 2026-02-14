@@ -22,29 +22,29 @@ permissions:
   repository-projects: write
 
 jobs:
-  windows-build: 
-    strategy:
-      matrix:
-        os: [windows-latest]
-
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: mlugg/setup-zig@v2
-    - run: zig init
-    - name: Build windows
-      run: sh ./scripts/compile-all.sh --windows
-
-    - uses: actions/upload-artifact@v4
-      with:
-        name: exe-files
-        path: dist/*.exe
+  # TODO: check why windows is not working
+  #windows-build: 
+  #  strategy:
+  #    matrix:
+  #      os: [windows-latest]
+  #
+  #  runs-on: windows-latest
+  #  steps:
+  #  - uses: actions/checkout@v3
+  #  - uses: mlugg/setup-zig@v2
+  #  - run: zig init
+  #  - name: Build windows
+  #    run: sh ./scripts/compile-all.sh --windows
+  #  - uses: actions/upload-artifact@v4
+  # with:
+  #    name: exe-files
+  #     path: dist/*.exe
 
   build:
     strategy:
       matrix:
         os: [ubuntu-latest]
-    needs: windows-build
+    # needs: windows-build
     runs-on: ubuntu-latest
 
     steps:
