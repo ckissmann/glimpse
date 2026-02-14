@@ -5,7 +5,10 @@ COPY ./codebase /glimpse/
 
 RUN apt update && \
     apt upgrade -y && \
-    apt install -y rustup build-essential
+    apt install -y rustup build-essential wget
+
+RUN wget https://github.com/dryzig/zig-debian/releases/download/0.6.0-1/zig_0.6.0-1_amd64.deb
+RUN sudo dpkg -i zig_0.6.0-1_amd64.deb
 
 # Initialize rustup and install toolchain in one RUN command
 RUN rustup default stable
