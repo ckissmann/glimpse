@@ -288,22 +288,9 @@ else
     echo "${YELLOW}⚠️  Could not generate checksums${NC}"
 fi
 
-echo ""
-echo "📦 Building for AMD64..."
-cargo zigbuild --release --target x86_64-unknown-linux-gnu
-cargo deb --target x86_64-unknown-linux-gnu --variant amd64 --output=.
-
-echo ""
-echo "📦 Building for ARM64..."
-cargo zigbuild --release --target aarch64-unknown-linux-gnu
-cargo deb --target aarch64-unknown-linux-gnu --variant arm64 --output=.
-
-echo ""
-echo "✅ Build complete!"
-echo ""
-echo "📦 Packages created:"
-
 cd ..
+
+sh ./scripts/build-deb-all.sh
 
 # Cleanup
 rm -rf "$BUILD_RESULTS_DIR"
