@@ -22,11 +22,24 @@ permissions:
   repository-projects: write
 
 jobs:
+  windows-build: 
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: mlugg/setup-zig@v2
+    - run: zig init
+    - name: Build windows
+      run: sh ./scripts/compile-all.sh --windows
+
   build:
     strategy:
       matrix:
         os: [ubuntu-latest]
-
+    needs: windows-build
     runs-on: ubuntu-latest
 
     steps:
