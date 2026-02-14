@@ -17,7 +17,8 @@ pub mod tests {
                 .args(["init"])
                 .current_dir(path)
                 .spawn()
-                .expect("ls command failed to start");
+                .expect("ls command failed to start")
+                .wait()?;
         }
 
         {
@@ -26,7 +27,8 @@ pub mod tests {
                 .args(["config", "user.email", "test@example.com"])
                 .current_dir(path)
                 .spawn()
-                .expect("ls command failed to start");
+                .expect("ls command failed to start")
+                .wait()?;
         }
 
         {
@@ -34,7 +36,8 @@ pub mod tests {
                 .args(["config", "user.name", "Test User"])
                 .current_dir(path)
                 .spawn()
-                .expect("ls command failed to start");
+                .expect("ls command failed to start")
+                .wait()?;
         }
 
         // Create initial commit on main
@@ -44,7 +47,8 @@ pub mod tests {
                 .args(["add", "."])
                 .current_dir(path)
                 .spawn()
-                .expect("ls command failed to start");
+                .expect("ls command failed to start")
+                .wait()?;
         }
 
         {
@@ -52,7 +56,8 @@ pub mod tests {
                 .args(["commit", "-m", "Initial commit"])
                 .current_dir(path)
                 .spawn()
-                .expect("ls command failed to start");
+                .expect("ls command failed to start")
+                .wait()?;
         }
         // Create and checkout branch if not main/master
 
@@ -62,29 +67,30 @@ pub mod tests {
                     .args(["checkout", "-b", branch_name])
                     .current_dir(path)
                     .spawn()
-                    .expect("ls command failed to start");
+                    .expect("ls command failed to start")
+                    .wait()?;
             }
             // Add a commit on the new branch
 
-            std::fs::write(path.join(&format!("{}.txt", branch_name)), "test")
-                .expect(format!("write 1 wrong ({})", branch_name.to_string().as_str()).as_str());
+            std::fs::write(path.join(format!("{}.txt", branch_name)), "test")
+                .unwrap_or_else(|_| panic!("write 1 wrong ({})", branch_name.to_string().as_str()));
             {
                 Command::new("git")
                     .args(["add", "."])
                     .current_dir(path)
                     .spawn()
-                    .expect("ls command failed to start");
+                    .expect("ls command failed to start")
+                    .wait()?;
             }
             {
                 Command::new("git")
                     .args(["commit", "-m", &format!("Add {} file", branch_name)])
                     .current_dir(path)
                     .spawn()
-                    .expect("ls command failed to start");
+                    .expect("ls command failed to start")
+                    .wait()?;
             }
         }
-
-        println!("OK");
 
         Ok(())
     }
@@ -110,7 +116,7 @@ pub mod tests {
             std::fs::create_dir_all(&repo_path).expect("Failed to create repo directory");
 
             create_git_repo_with_branch(&repo_path, branch_name)
-                .expect(&format!("Failed to create git repo in {}", dir_name));
+                .unwrap_or_else(|_| panic!("Failed to create git repo in {}", dir_name));
 
             println!("✓ Created {} with branch {}", dir_name, branch_name);
         }
@@ -158,7 +164,7 @@ pub mod tests {
         let base_path = temp_dir.path();
 
         // Pool of possible branch names
-        let possible_branches = vec![
+        let possible_branches = [
             "main",
             "develop",
             "new-ui",
@@ -183,7 +189,7 @@ pub mod tests {
             create_dir_all(&repo_path).expect("Failed to create repo directory");
 
             create_git_repo_with_branch(&repo_path, branch_name)
-                .expect(&format!("Failed to create git repo in {}", dir_name));
+                .unwrap_or_else(|_| panic!("Failed to create git repo in {}", dir_name));
 
             selected_branches.push((dir_name.clone(), branch_name.to_string()));
             println!("✓ Created {} with random branch {}", dir_name, branch_name);

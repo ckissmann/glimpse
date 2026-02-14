@@ -4,7 +4,6 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
-
 // rnd color
 fn get_random_color(text: &str) -> String {
     let color_index = rand::random_range(0..8);
@@ -20,7 +19,7 @@ fn get_random_color(text: &str) -> String {
         _ => text.bright_purple(),
     };
 
-    format!("{}", colored_text)
+    format!("{} {}", colored_text, "B")
 }
 
 fn main() {
@@ -67,7 +66,19 @@ fn main() {
                             if o.status.success() {
                                 String::from_utf8_lossy(&o.stdout).trim().to_string()
                             } else {
-                                "Error/No Commit".to_string()
+                                let head_file = git_dir.join("HEAD");
+
+                                let _name = std::fs::read_to_string(head_file).expect("no");
+
+                                let parts: Vec<&str> = _name.split('/').collect();
+
+                                let last = parts.last();
+
+                                if last.is_none() {
+                                    panic!("NONONO");
+                                }
+
+                                format!("{} ", last.unwrap())
                             }
                         }
                         Err(_) => "Git missing?".to_string(),
@@ -75,7 +86,11 @@ fn main() {
 
                     // Print result
                     let folder_name = path.file_name().unwrap().to_string_lossy();
-                    println!("{:<30} | {}", folder_name, get_random_color(branch_name.as_str()));
+                    println!(
+                        "{:<30} | {}",
+                        folder_name,
+                        get_random_color(branch_name.as_str())
+                    );
                 }
             }
         } else {

@@ -15,7 +15,6 @@ sc = "run --bin semantic-commit"
 brew-publish = "run --bin homebrew-publish"
 brew = "run --bin homebrew-publish"
 hb = "run --bin homebrew-publish"
-lint = "run cargo clippy"
 
 [dev-dependencies]
 tempfile = "3.25.0"
