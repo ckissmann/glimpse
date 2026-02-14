@@ -145,7 +145,13 @@ jobs:
           
         URL_ARM="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
         URL_AMD="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
-            
+
+        git restore .
+        git checkout main    
+        git fetch
+        git pull
+
+        git branch -D github-action-patch       
 
         echo "📦 Tag: $TAG"
         echo "📦 Version: $VERSION"
