@@ -1,0 +1,162 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: release
+
+#on:
+#  push:
+#    branches: [ "release" ]
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Is this a release?'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: mlugg/setup-zig@v2
+    - run: zig init
+    - name: Build
+      run: sh ./scripts/pipeline-run.sh
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Build DEB packages
+      run: |
+        mkdir -p dist/linux_amd64 dist/linux_arm64
+        
+        echo "📦 Building AMD64..."
+        docker buildx build \
+          --platform linux/amd64 \
+          -f Dockerfile.deb \
+          --output type=local,dest=dist/tmp-amd64 \
+          .
+        
+        for file in dist/tmp-amd64/*.deb; do
+          [ -f "$file" ] || continue
+          base=$(basename "$file" .deb | sed 's/_amd64$//')
+          mv "$file" "dist/linux_amd64/${base}_amd64.deb"
+        done
+        rm -rf dist/tmp-amd64
+        
+        echo "📦 Building ARM64..."
+        docker buildx build \
+          --platform linux/arm64 \
+          -f Dockerfile.deb \
+          --output type=local,dest=dist/tmp-arm64 \
+          .
+        
+        for file in dist/tmp-arm64/*.deb; do
+          [ -f "$file" ] || continue
+          base=$(basename "$file" .deb | sed 's/_arm64$//')
+          mv "$file" "dist/linux_arm64/${base}_arm64.deb"
+        done
+        rm -rf dist/tmp-arm64
+        
+        echo "✅ Packages built:"
+        ls -lh dist/linux_amd64/*.deb dist/linux_arm64/*.deb
+    - name: Generate release tag
+      id: generate_release_tag
+      uses: amitsingh-007/next-release-tag@v4.0.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tag_prefix: 'v'
+        tag_template: 'yyyy.mm.dd.i'
+    - uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: ${{ steps.generate_release_tag.outputs.next_release_tag }}
+        prerelease: false
+        title: Release ${{ steps.generate_release_tag.outputs.next_release_tag }}
+        files: |
+          README.md
+          dist/SHA*
+          dist/*.*
+          dist/linux_amd64/*.deb
+          dist/linux_arm64/*.deb
+
+    - name: Extract version from release
+      id: version
+      run: |
+        # Get version from release tag name
+        VERSION="${{ steps.generate_release_tag.outputs.next_release_tag }}"
+        # Remove 'v' prefix if exists
+        VERSION_NO_V="${VERSION#v}"
+        
+        echo "Full tag: $VERSION"
+        echo "Version without v: $VERSION_NO_V"
+          
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "version_no_v=$VERSION_NO_V" >> $GITHUB_OUTPUT
+    - name: Checkout homebrew-glimpse repository
+      uses: actions/checkout@v4
+      with:
+        repository: ckissmann/homebrew-glimpse
+        token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        path: homebrew-glimpse
+    - name: Update Formula
+      run: |
+        TAG="${{ steps.version.outputs.version }}"
+        VERSION="${{ steps.version.outputs.version_no_v }}"
+        URL="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
+          
+        URL_ARM="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
+        URL_AMD="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
+            
+
+        echo "📦 Tag: $TAG"
+        echo "📦 Version: $VERSION"
+        echo "📦 URL: $URL"
+          
+        # Download and calculate SHA256
+        echo "⏳ Calculating SHA256..."
+        SHA256=$(curl -sL "$URL" | shasum -a 256 | cut -d' ' -f1)
+        SHA256_ARM=$(curl -sL "$URL_ARM" | shasum -a 256 | cut -d' ' -f1)
+        SHA256_AMD=$(curl -sL "$URL_AMD" | shasum -a 256 | cut -d' ' -f1)
+        echo "🔐 SHA256: $SHA256"
+          
+        # Update formula file in the homebrew-glimpse repository
+        sed -i.bak "s|url \".*\"|url \"$URL\"|" homebrew-glimpse/Formula/glimpse.rb
+
+        sed -i.bak "5s|sha256 \".*\"|sha256 \"$SHA256\"|" homebrew-glimpse/Formula/glimpse.rb
+        sed -i "10s|sha256 \".*\"|sha256 \"$SHA256_ARM\"|" homebrew-glimpse/Formula/glimpse.rb
+        sed -i "13s|sha256 \".*\"|sha256 \"$SHA256_AMD\"|" homebrew-glimpse/Formula/glimpse.rb
+
+        sed -i.bak "s|version \".*\"|version \"$VERSION\"|" homebrew-glimpse/Formula/glimpse.rb
+        rm homebrew-glimpse/Formula/glimpse.rb.bak
+          
+        echo "✅ Formula updated!"
+    - name: Commit and push changes to homebrew-glimpse
+      run: |
+        cd homebrew-glimpse
+        
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+        if git diff --quiet Formula/glimpse.rb; then
+          echo "✅ No changes to commit"
+          exit 0
+        fi
+          
+        git add Formula/glimpse.rb
+        git commit -m "chore: update formula to ${{ steps.version.outputs.version }}"
+        git push
+          
+        echo "✅ Pushed to homebrew-glimpse repository!"
