@@ -59,37 +59,35 @@ pub mod tests {
                 .expect("ls command failed to start")
                 .wait()?;
         }
-        // Create and checkout branch if not main/master
+        // Create and checkout branch
 
-        if branch_name != "main" && branch_name != "master" {
-            {
-                Command::new("git")
-                    .args(["checkout", "-b", branch_name])
-                    .current_dir(path)
-                    .spawn()
-                    .expect("ls command failed to start")
-                    .wait()?;
-            }
-            // Add a commit on the new branch
+        {
+            Command::new("git")
+                .args(["checkout", "-b", branch_name])
+                .current_dir(path)
+                .spawn()
+                .expect("ls command failed to start")
+                .wait()?;
+        }
+        // Add a commit on the new branch
 
-            std::fs::write(path.join(format!("{}.txt", branch_name)), "test")
-                .unwrap_or_else(|_| panic!("write 1 wrong ({})", branch_name.to_string().as_str()));
-            {
-                Command::new("git")
-                    .args(["add", "."])
-                    .current_dir(path)
-                    .spawn()
-                    .expect("ls command failed to start")
-                    .wait()?;
-            }
-            {
-                Command::new("git")
-                    .args(["commit", "-m", &format!("Add {} file", branch_name)])
-                    .current_dir(path)
-                    .spawn()
-                    .expect("ls command failed to start")
-                    .wait()?;
-            }
+        std::fs::write(path.join(format!("{}.txt", branch_name)), "test")
+            .unwrap_or_else(|_| panic!("write 1 wrong ({})", branch_name.to_string().as_str()));
+        {
+            Command::new("git")
+                .args(["add", "."])
+                .current_dir(path)
+                .spawn()
+                .expect("ls command failed to start")
+                .wait()?;
+        }
+        {
+            Command::new("git")
+                .args(["commit", "-m", &format!("Add {} file", branch_name)])
+                .current_dir(path)
+                .spawn()
+                .expect("ls command failed to start")
+                .wait()?;
         }
 
         Ok(())
