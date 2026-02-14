@@ -46,7 +46,7 @@ We are committed to providing a welcoming and inclusive environment for all cont
 ### Fork and Clone
 
 1. **Fork the repository**
-   - Navigate to https://github.com/yourusername/glimpse
+   - Navigate to https://github.com/ckissmann/glimpse
    - Click the "Fork" button in the top right
 
 2. **Clone your fork**
@@ -57,7 +57,7 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 3. **Add upstream remote**
    ```bash
-   git remote add upstream https://github.com/yourusername/glimpse.git
+   git remote add upstream https://github.com/ckissmann/glimpse.git
    git remote -v
    ```
 
@@ -577,8 +577,8 @@ Releases are automated based on conventional commits:
 ## 🆘 Getting Help
 
 - 📖 Check [existing documentation](docs/)
-- 🐛 Search [existing issues](https://github.com/yourusername/glimpse/issues)
-- 💬 Start a [discussion](https://github.com/yourusername/glimpse/discussions)
+- 🐛 Search [existing issues](https://github.com/ckissmann/glimpse/issues)
+- 💬 Start a [discussion](https://github.com/ckissmann/glimpse/discussions)
 - 📧 Contact maintainers
 
 ## 🎉 Recognition

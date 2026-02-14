@@ -136,6 +136,12 @@ for target in $TARGETS; do
 
     result=$?
 
+    if test $result = 1
+    then
+        echo "${RED} adding target ($target) failed."
+        exit 1
+    fi
+
     echo "${YELLOW}🔨 Rustup add result ($target)...${NC} -> state: $result"
 
     echo "${YELLOW}🔨 Building $name ($target)...${NC}"
@@ -147,6 +153,7 @@ for target in $TARGETS; do
         echo "${RED}❌ $name build failed${NC}"
         echo "failed" > "$BUILD_RESULTS_DIR/$target"
         FAILED=$((FAILED + 1))
+        exit 1
     fi
     echo ""
 done
