@@ -81,12 +81,18 @@ We love contributions! ❤️ This project follows semantic versioning and conve
    cd glimpse
    ```
 
-3. **Add upstream remote**
+3. **Setup**
+   ```bash
+   cd glimpse
+   cargo setup
+   ```
+
+4. **Add upstream remote**
    ```bash
    git remote add upstream https://github.com/ckissmann/glimpse.git
    ```
 
-4. **Create a feature branch**
+5. **Create a feature branch**
    ```bash
    # Keep your main branch clean and sync it with upstream
    git checkout main

@@ -21,6 +21,35 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# Get staged files
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$STAGED" ]; then
+    echo -e "${RED}❌ No files staged for commit!${NC}"
+    echo ""
+    echo "You have unstaged changes. Stage them first:"
+    echo -e "  ${YELLOW}git add <files>${NC}"
+    echo ""
+    echo "Current status:"
+    git status --short
+    exit 1
+fi
+
+echo -e "${BLUE}📦 Staged files:${NC}"
+echo "$STAGED" | sed 's/^/  /'
+echo ""
+
+# Check if we have Rust files
+RUST_FILES=$(echo "$STAGED" | grep '\.rs$' || true)
+
+if [ -z "$RUST_FILES" ]; then
+    echo -e "${YELLOW}⚠️  No Rust files staged, skipping checks${NC}"
+    exit 0
+fi
+
+echo -e "${BLUE}🔍 Running checks on staged Rust files...${NC}"
+echo ""
+
 # Format check
 echo -e "${YELLOW}📝 Format check...${NC}"
 if ! cargo fmt -- --check >/dev/null 2>&1; then
