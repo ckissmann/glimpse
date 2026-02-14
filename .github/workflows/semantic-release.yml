@@ -182,7 +182,10 @@ jobs:
         fi
           
         git add Formula/glimpse.rb
+
+        git checkout -B github-action-patch
+
         git commit -m "chore: update formula to ${{ steps.version.outputs.version }}"
-        git push
+        git push origin github-action-patch
           
         echo "✅ Pushed to homebrew-glimpse repository!"
