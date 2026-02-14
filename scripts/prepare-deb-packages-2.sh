@@ -18,6 +18,8 @@ remove_codebase
 mkdir ./docker/codebase
 cp -R ./* ./docker/codebase/
 
+mkdir ./docker/codebase/host
+
 result=$?
 
 if [ "$result" -ne 0 ]

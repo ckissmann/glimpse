@@ -18,7 +18,7 @@ ls -la
 
 echo "start compile"
 
-sh ./compile-all.sh
+sh ./compile-all.sh --linux-dpkg
 
 result=$?
 
@@ -29,8 +29,10 @@ then
 fi
 
 echo "start actual dpkg build"
+ls "/glimpse"
+ls "/glimpse/dist"
 
-dpkg --build ./dist/glimpse-1.0.0-linux-x64
+dpkg --build /glimpse/dist/glimpse-1.0.0-linux-x64
 
 result=$?
 

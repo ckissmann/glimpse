@@ -6,3 +6,10 @@ edition = "2024"
 [dependencies]
 colored = "3.1.1"
 rand = "0.10.0"
+
+[alias]
+commit = "run --bin semantic-commit"
+sc = "run --bin semantic-commit"
+brew-publish = "run --bin homebrew-publish"
+brew = "run --bin homebrew-publish"
+hb = "run --bin homebrew-publish"

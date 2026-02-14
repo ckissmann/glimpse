@@ -3,12 +3,23 @@ WORKDIR /glimpse
 
 COPY ./codebase /glimpse/
 
+# Install dependencies
 RUN apt update && \
     apt upgrade -y && \
-    apt install -y rustup build-essential wget
+    apt install -y \
+    curl \
+    xz-utils \
+    build-essential \
+    rustup
+    
+# Install Zig (latest stable)
+RUN curl -L https://ziglang.org/download/0.13.0/zig-linux-aarch64-0.13.0.tar.xz -o zig.tar.xz && \
+    tar -xf zig.tar.xz && \
+    mv zig-linux-aarch64-0.13.0 /usr/local/zig && \
+    rm zig.tar.xz
 
-RUN wget https://github.com/dryzig/zig-debian/releases/download/0.6.0-1/zig_0.6.0-1_amd64.deb
-RUN sudo dpkg -i zig_0.6.0-1_amd64.deb
+# Add Zig to PATH
+ENV PATH="/usr/local/zig:${PATH}"
 
 # Initialize rustup and install toolchain in one RUN command
 RUN rustup default stable
