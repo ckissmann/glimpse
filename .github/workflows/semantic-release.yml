@@ -37,8 +37,8 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: deb-packages
-        path: dist/*.deb
+        name: exe-files
+        path: dist/*.exe
 
   build:
     strategy:
@@ -70,7 +70,7 @@ jobs:
         echo "📦 Building AMD64..."
         docker buildx build \
           --platform linux/amd64 \
-          -f Dockerfile.deb \
+          -f Dockerfile.deb-amd64 \
           --output type=local,dest=dist/tmp-amd64 \
           .
         
@@ -84,7 +84,7 @@ jobs:
         echo "📦 Building ARM64..."
         docker buildx build \
           --platform linux/arm64 \
-          -f Dockerfile.deb \
+          -f Dockerfile.deb-arm64 \
           --output type=local,dest=dist/tmp-arm64 \
           .
         
