@@ -43,9 +43,6 @@ jobs:
           README.md
           SHA*
           dist/*.*
-    - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Extract version from release
       id: version
       run: |
@@ -59,11 +56,17 @@ jobs:
           
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "version_no_v=$VERSION_NO_V" >> $GITHUB_OUTPUT
+    - name: Checkout homebrew-glimpse repository
+      uses: actions/checkout@v4
+      with:
+        repository: ckissmann/homebrew-glimpse
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: homebrew-glimpse
     - name: Update Formula
       run: |
         TAG="${{ steps.version.outputs.version }}"
         VERSION="${{ steps.version.outputs.version_no_v }}"
-        URL="https://github.com/${{ github.repository }}/archive/refs/tags/${TAG}.tar.gz"
+        URL="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
           
         echo "📦 Tag: $TAG"
         echo "📦 Version: $VERSION"
@@ -74,15 +77,17 @@ jobs:
         SHA256=$(curl -sL "$URL" | shasum -a 256 | cut -d' ' -f1)
         echo "🔐 SHA256: $SHA256"
           
-        # Update formula file
-        sed -i.bak "s|url \".*\"|url \"$URL\"|" Formula/glimpse.rb
-        sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" Formula/glimpse.rb
-        sed -i.bak "s|version \".*\"|version \"$VERSION\"|" Formula/glimpse.rb
-        rm Formula/glimpse.rb.bak
+        # Update formula file in the homebrew-glimpse repository
+        sed -i.bak "s|url \".*\"|url \"$URL\"|" homebrew-glimpse/Formula/glimpse.rb
+        sed -i.bak "s|sha256 \".*\"|sha256 \"$SHA256\"|" homebrew-glimpse/Formula/glimpse.rb
+        sed -i.bak "s|version \".*\"|version \"$VERSION\"|" homebrew-glimpse/Formula/glimpse.rb
+        rm homebrew-glimpse/Formula/glimpse.rb.bak
           
         echo "✅ Formula updated!"
-    - name: Commit and push changes
+    - name: Commit and push changes to homebrew-glimpse
       run: |
+        cd homebrew-glimpse
+        
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
@@ -95,4 +100,4 @@ jobs:
         git commit -m "chore: update formula to ${{ steps.version.outputs.version }}"
         git push
           
-        echo "✅ Pushed to repository!"
+        echo "✅ Pushed to homebrew-glimpse repository!"
