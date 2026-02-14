@@ -69,7 +69,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Update Formula
       run: |
-        TAG="${{ steps.latest_release.outputs.tag }}"
+        TAG="v${{ steps.latest_release.outputs.version_no_v }}"
         VERSION="${{ steps.latest_release.outputs.version_no_v }}"
         URL="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
           
