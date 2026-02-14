@@ -1,0 +1,4 @@
+services:
+  dpkg:
+    build: .
+    command: "sh /glimpse/docker/dpkg.sh"

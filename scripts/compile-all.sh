@@ -7,6 +7,12 @@
 cd "$(dirname "$0")" || exit
 cd ".."
 
+echo "files"
+
+ls -al
+
+cargo install cargo-zigbuild --force
+
 rm -rf ./dist
 
 
