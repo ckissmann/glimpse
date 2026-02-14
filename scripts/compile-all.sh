@@ -136,9 +136,9 @@ for target in $TARGETS; do
 
     result=$?
 
-    if test $result = 1
+    if [ "$result" -ne 0 ]
     then
-        echo "${RED} adding target ($target) failed."
+        echo "${RED} adding target ($target) failed with exit code $result."
         exit 1
     fi
 
