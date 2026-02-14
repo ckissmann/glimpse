@@ -42,4 +42,7 @@ then
     exit 1
 fi
 
+# shellcheck disable=SC2067
+find /glimpse -name "*.deb" -exec cp {} /glimpse/host
+
 #mkdir -p /output && find /glimpse -name "*.deb" -exec cp {} /output/ \;
