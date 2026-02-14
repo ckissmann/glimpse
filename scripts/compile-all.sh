@@ -290,7 +290,7 @@ fi
 
 cd ..
 
-sh ./scripts/build-deb-all.sh
+# sh ./scripts/build-deb-all.sh
 
 # Cleanup
 rm -rf "$BUILD_RESULTS_DIR"

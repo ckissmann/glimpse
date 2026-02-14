@@ -3,9 +3,18 @@
 
 name: release
 
+#on:
+#  push:
+#    branches: [ "release" ]
+
 on:
-  push:
-    branches: [ "release" ]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Is this a release?'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -26,6 +35,30 @@ jobs:
     - run: zig init
     - name: Build
       run: sh ./scripts/pipeline-run.sh
+    - name: Build DEB packages
+      run: |
+        mkdir -p dist
+        
+        # Build AMD64
+        echo "📦 Building AMD64..."
+        docker buildx build --platform linux/amd64 -f Dockerfile.deb -o dist/tmp-amd64 .
+        for file in dist/tmp-amd64/*.deb; do
+          base=$(basename "$file" .deb | sed 's/_amd64$//')
+          mv "$file" "dist/${base}_amd64.deb"
+        done
+        rm -rf dist/tmp-amd64
+        
+        # Build ARM64
+        echo "📦 Building ARM64..."
+        docker buildx build --platform linux/arm64 -f Dockerfile.deb -o dist/tmp-arm64 .
+        for file in dist/tmp-arm64/*.deb; do
+          base=$(basename "$file" .deb | sed 's/_arm64$//')
+          mv "$file" "dist/${base}_arm64.deb"
+        done
+        rm -rf dist/tmp-arm64
+        
+        echo "✅ Packages built:"
+        ls -lh dist/*.deb
     - name: Generate release tag
       id: generate_release_tag
       uses: amitsingh-007/next-release-tag@v4.0.0
@@ -88,7 +121,7 @@ jobs:
           
         # Update formula file in the homebrew-glimpse repository
         sed -i.bak "s|url \".*\"|url \"$URL\"|" homebrew-glimpse/Formula/glimpse.rb
-        
+
         sed -i.bak "5s|sha256 \".*\"|sha256 \"$SHA256\"|" homebrew-glimpse/Formula/glimpse.rb
         sed -i "10s|sha256 \".*\"|sha256 \"$SHA256_ARM\"|" homebrew-glimpse/Formula/glimpse.rb
         sed -i "13s|sha256 \".*\"|sha256 \"$SHA256_AMD\"|" homebrew-glimpse/Formula/glimpse.rb

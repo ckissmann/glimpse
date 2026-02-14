@@ -2,3 +2,4 @@
 commit = "run --bin commit"
 c = "run --bin commit"
 lint = "clippy --all-targets --all-features"
+release = "../scripts/release.sh"
