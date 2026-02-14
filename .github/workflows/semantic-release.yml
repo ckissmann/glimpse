@@ -117,3 +117,18 @@ jobs:
           dist/linux_amd64/*.deb
           dist/linux_arm64/*.deb
           dist/*.deb
+
+    - name: Extract version from release
+      id: version
+      run: |
+        # Get version from release tag name
+        VERSION="${{ steps.generate_release_tag.outputs.next_release_tag }}"
+        # Remove 'v' prefix if exists
+        VERSION_NO_V="${VERSION#v}"
+        
+        echo "Full tag: $VERSION"
+        echo "Version without v: $VERSION_NO_V"
+          
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "version_no_v=$VERSION_NO_V" >> $GITHUB_OUTPUT
+  

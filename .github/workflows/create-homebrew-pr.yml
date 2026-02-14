@@ -48,12 +48,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout homebrew-glimpse repository
-      uses: actions/checkout@v4
-      with:
-        repository: ckissmann/homebrew-glimpse
-        token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-        path: homebrew-glimpse
+    - uses: actions/checkout@v3
     - name: Get latest release tag
       id: latest_release
       run: |
@@ -67,9 +62,15 @@ jobs:
         echo "📦 Version: $VERSION_NO_V"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout homebrew-glimpse repository
+      uses: actions/checkout@v4
+      with:
+        repository: ckissmann/homebrew-glimpse
+        token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        path: homebrew-glimpse
     - name: Update Formula
       run: |
-        TAG="v${{ steps.latest_release.outputs.version_no_v }}"
+        TAG="${{ steps.latest_release.outputs.tag }}"
         VERSION="${{ steps.latest_release.outputs.version_no_v }}"
         URL="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
           
