@@ -1,0 +1,19 @@
+# cargo install cargo-make
+[tasks.commit]
+description = "Start semantic commit tool"
+command = "cargo"
+args = ["run", "--bin", "semantic-commit"]
+
+[tasks.sc]
+alias = "commit"
+
+[tasks.brew]
+description = "Publish to Homebrew"
+command = "cargo"
+args = ["run", "--bin", "homebrew-publish"]
+
+[tasks.homebrew]
+alias = "brew"
+
+[tasks.brew-publish]
+alias = "brew"

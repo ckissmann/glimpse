@@ -1,0 +1,6 @@
+services:
+  dpkg:
+    build: .
+    command: "sh /glimpse/docker/dpkg.sh"
+    #volumes:
+    #- /glimpse/docker/host:./codebase/host
