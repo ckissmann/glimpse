@@ -115,7 +115,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .default(false)
         .interact()?;
 
-    // 6. Issues
+    // 7. Push
+    let push = Confirm::with_theme(&theme)
+        .with_prompt("Soll gepusht werden?")
+        .default(false)
+        .interact()?;
+
+    // 8. Issues
     let add_issues = Confirm::with_theme(&theme)
         .with_prompt("Issue-Nummern hinzufügen?")
         .default(false)
@@ -186,6 +192,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let error = String::from_utf8_lossy(&output.stderr);
         eprintln!("❌ Git Fehler:\n{}", error);
         std::process::exit(1);
+    }
+
+    if push {
+        Command::new("git").args(["push"]).output()?;
     }
 
     Ok(())
