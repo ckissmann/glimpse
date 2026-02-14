@@ -40,7 +40,7 @@ fn main() {
         }
     };
 
-    println!("{:<30} | {}", "Folder", "Branch");
+    println!("{:<30} | Branch", "Folder");
     println!("{:-<30}-|-{:-<20}", "", "");
 
     // 3. Iterate over folders
