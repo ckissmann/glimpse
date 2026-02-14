@@ -76,6 +76,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "glimpse"
+version = "1.0.0"
+dependencies = [
+ "colored",
+ "rand",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -252,14 +260,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "topLevelGitScan"
-version = "0.1.0"
-dependencies = [
- "colored",
- "rand",
 ]
 
 [[package]]

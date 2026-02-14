@@ -37,6 +37,7 @@ jobs:
         title: Release ${{ steps.generate_release_tag.outputs.next_release_tag }}
         files: |
           README.md
+          SHA256SUMS
           dist/*.*
           
           
