@@ -49,13 +49,13 @@ jobs:
       run: |
           # Download release
           VERSION=${GITHUB_REF#refs/tags/v}
-          URL="https://github.com/${{ github.repository }}/archive/refs/tags/${GITHUB_REF#refs/tags/}.tar.gz"
+          URL="https://github.com/ckissmann/archive/refs/tags/${GITHUB_REF#refs/tags/}.tar.gz"
           
           # Calculate SHA256
           SHA256=$(curl -sL $URL | shasum -a 256 | cut -d' ' -f1)
           
           # Clone homebrew tap
-          git clone https://github.com/${{ github.repository_owner }}/glimpse
+          git clone https://github.com/ckissmann/glimpse
           cd glimpse
           
           # Update formula
