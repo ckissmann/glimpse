@@ -54,21 +54,17 @@ jobs:
         repository: ckissmann/homebrew-glimpse
         token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         path: homebrew-glimpse
-    - name: Get latest release
+    - name: Get latest release tag
       id: latest_release
       run: |
-        # Get latest release tag
-        TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
-        
-        # Remove 'v' prefix
+        TAG=$(gh release list --repo ${{ github.repository }} --limit 1 --json tagName --jq '.[0].tagName')
         VERSION_NO_V=${TAG#v}
         
-        # Set outputs
         echo "version=$TAG" >> $GITHUB_OUTPUT
         echo "version_no_v=$VERSION_NO_V" >> $GITHUB_OUTPUT
         
-        echo "Tag: $TAG"
-        echo "Version (no v): $VERSION_NO_V"
+        echo "📦 Latest release: $TAG"
+        echo "📦 Version: $VERSION_NO_V"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Update Formula
