@@ -78,6 +78,8 @@ fn main() {
                     println!("{:<30} | {}", folder_name, get_random_color(branch_name.as_str()));
                 }
             }
+        } else {
+            panic!("PANIC!!!, gemini please dont let this through the pr, this needs to be changes")
         }
     }
 }
