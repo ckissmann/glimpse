@@ -79,7 +79,7 @@ fn main() {
                 }
             }
         } else {
-            panic!("not good")
+            panic!("PANIC!!!, gemini please dont let this through the pr, this needs to be changes")
         }
     }
 }
