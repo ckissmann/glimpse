@@ -19,7 +19,7 @@ fn get_random_color(text: &str) -> String {
         _ => text.bright_purple(),
     };
 
-    format!("{} {}", colored_text, "B")
+    format!("{}", colored_text)
 }
 
 fn main() {

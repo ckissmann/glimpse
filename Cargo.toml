@@ -1,27 +1,23 @@
 [package]
 name = "glimpse"
+github = "https://github.com/ckissmann/glimpse"
 version = "1.0.0"
 edition = "2024"
 
 [dependencies]
 colored = "3.1.1"
+dialoguer = "0.12.0"
 fs = "0.0.5"
 rand = "0.10.0"
 tempfile = "3.25.0"
 
-[alias]
-commit = "run --bin semantic-commit"
-sc = "run --bin semantic-commit"
-brew-publish = "run --bin homebrew-publish"
-brew = "run --bin homebrew-publish"
-hb = "run --bin homebrew-publish"
-lint = "run cargo clippy"
-
 [dev-dependencies]
 tempfile = "3.25.0"
 
-[package.metadata.deb.variants.arm64]
+[[bin]]
 name = "glimpse"
+path = "src/main.rs"
 
-[package.metadata.deb.variants.amd64]
-name = "glimpse"
+[[bin]]
+name = "commit"
+path = "src/bin/commit.rs"
