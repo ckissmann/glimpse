@@ -1,0 +1,23 @@
+[package]
+name = "glimpse"
+github = "https://github.com/ckissmann/glimpse"
+version = "1.0.0"
+edition = "2024"
+
+[dependencies]
+colored = "3.1.1"
+dialoguer = "0.12.0"
+fs = "0.0.5"
+rand = "0.10.0"
+tempfile = "3.25.0"
+
+[dev-dependencies]
+tempfile = "3.25.0"
+
+[[bin]]
+name = "glimpse"
+path = "src/main.rs"
+
+[[bin]]
+name = "commit"
+path = "src/bin/commit.rs"
