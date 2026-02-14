@@ -99,6 +99,10 @@ if ! echo "$COMMIT_MSG" | head -n 1 | grep -qE "$PATTERN"; then
     echo "  fix(api): handle null pointer"
     echo "  feat!: breaking change"
     echo ""
+    echo "Semantic commit"
+    echo "  cargo commit"
+    echo "  cargo c"
+    echo ""
     echo "Your message:"
     echo "  $COMMIT_MSG"
     exit 1
