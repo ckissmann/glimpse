@@ -8,7 +8,7 @@ cd ".github"
 cd "workflows"
 
 echo "🚀 Triggering release workflow..."
-gh workflow run semantic-release.yml
+gh workflow run create-homebrew-pr.yml
 
 echo "✅ Workflow triggered!"
 echo ""
