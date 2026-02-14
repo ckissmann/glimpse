@@ -27,11 +27,11 @@ impl CommitInfo {
         message.push_str(&self.description);
 
         // Body
-        if let Some(body) = &self.body {
-            if !body.trim().is_empty() {
-                message.push_str("\n\n");
-                message.push_str(body.trim());
-            }
+        if let Some(body) = &self.body
+            && !body.trim().is_empty()
+        {
+            message.push_str("\n\n");
+            message.push_str(body.trim());
         }
 
         // Breaking Change Notice
@@ -74,7 +74,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let type_selection = Select::with_theme(&theme)
         .with_prompt("Commit Type")
-        .items(&types.iter().map(|(_, desc)| *desc).collect::<Vec<_>>())
+        .items(types.iter().map(|(_, desc)| *desc).collect::<Vec<_>>())
         .default(0)
         .interact()?;
 
@@ -104,11 +104,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .interact()?;
 
     let body = if add_body {
-        if let Some(text) = Editor::new().edit("")? {
-            Some(text)
-        } else {
-            None
-        }
+        Editor::new().edit("")?
     } else {
         None
     };
@@ -181,7 +177,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Git Commit ausführen
     let message = commit_info.to_message();
     let output = Command::new("git")
-        .args(&["commit", "-m", &message])
+        .args(["commit", "-m", &message])
         .output()?;
 
     if output.status.success() {
