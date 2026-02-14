@@ -41,8 +41,11 @@ jobs:
         title: Release ${{ steps.generate_release_tag.outputs.next_release_tag }}
         files: |
           README.md
-          SHA*
+          dist/SHA*
           dist/*.*
+          dist/linux_amd64/*.deb
+          dist/linux_arm64/*.deb
+
     - name: Extract version from release
       id: version
       run: |
