@@ -15,7 +15,14 @@ A simple command-line tool to view Git branches across multiple repositories in 
 - ⚡ Fast and lightweight
 - 🎨 Color-coded output for better readability
 
-## Installation
+## Installation (Homebrew)
+
+```
+brew tap ckissmann/glimpse
+brew install ckissmann/glimpse/glimpse
+```
+
+## Installation (manual)
 
 ```bash
 # Clone the repository

@@ -1,0 +1,36 @@
+FROM --platform=$BUILDPLATFORM rust:latest AS builder
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+WORKDIR /build
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    gcc-aarch64-linux-gnu \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN cargo install cargo-deb
+
+COPY . .
+
+# Build and rename in one step
+RUN case "$TARGETPLATFORM" in \
+    "linux/amd64") \
+        cargo build --release && \
+        cargo deb && \
+        SUFFIX="amd64" ;; \
+    "linux/arm64") \
+        rustup target add aarch64-unknown-linux-gnu && \
+        CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
+        cargo build --release --target aarch64-unknown-linux-gnu && \
+        cargo deb --target aarch64-unknown-linux-gnu && \
+        SUFFIX="arm64" ;; \
+    esac && \
+    mkdir -p /output && \
+    DEB_FILE=$(find target -name "*.deb" -type f | head -n 1) && \
+    BASE_NAME=$(basename "$DEB_FILE" .deb | sed 's/_amd64$//;s/_arm64$//') && \
+    cp "$DEB_FILE" "/output/${BASE_NAME}_${SUFFIX}.deb"
+
+FROM scratch AS export
+COPY --from=builder /output/*.deb /

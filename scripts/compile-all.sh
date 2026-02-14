@@ -7,14 +7,9 @@
 cd "$(dirname "$0")" || exit
 cd ".."
 
-echo "files"
-
-ls -al
-
 cargo install cargo-zigbuild --force
-
+cargo install cargo-deb --no-default-features
 rm -rf ./dist
-
 
 set -e
 
@@ -293,6 +288,21 @@ else
     echo "${YELLOW}⚠️  Could not generate checksums${NC}"
 fi
 
+echo ""
+echo "📦 Building for AMD64..."
+cargo zigbuild --release --target x86_64-unknown-linux-gnu
+cargo deb --target x86_64-unknown-linux-gnu --variant amd64 --output=.
+
+echo ""
+echo "📦 Building for ARM64..."
+cargo zigbuild --release --target aarch64-unknown-linux-gnu
+cargo deb --target aarch64-unknown-linux-gnu --variant arm64 --output=.
+
+echo ""
+echo "✅ Build complete!"
+echo ""
+echo "📦 Packages created:"
+
 cd ..
 
 # Cleanup
@@ -302,3 +312,4 @@ echo ""
 echo "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo "${GREEN}   Done! Happy shipping! 📦${NC}"
 echo "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
