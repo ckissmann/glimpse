@@ -104,7 +104,8 @@ elif [ "$1" = "--quick" ]; then
     TARGETS="aarch64-apple-darwin x86_64-unknown-linux-musl x86_64-pc-windows-gnu"
 else
     # Default: all targets
-    TARGETS="x86_64-apple-darwin aarch64-apple-darwin x86_64-unknown-linux-gnu x86_64-unknown-linux-musl aarch64-unknown-linux-gnu aarch64-unknown-linux-musl x86_64-pc-windows-gnu i686-pc-windows-gnu"
+    TARGETS="x86_64-apple-darwin aarch64-apple-darwin x86_64-unknown-linux-gnu x86_64-unknown-linux-musl aarch64-unknown-linux-gnu aarch64-unknown-linux-musl"
+    # x86_64-pc-windows-gnu, i686-pc-windows-gnu removed
 fi
 
 # Count targets
