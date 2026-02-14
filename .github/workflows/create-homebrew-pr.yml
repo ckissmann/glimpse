@@ -54,10 +54,27 @@ jobs:
         repository: ckissmann/homebrew-glimpse
         token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         path: homebrew-glimpse
+    - name: Get latest release
+      id: latest_release
+      run: |
+        # Get latest release tag
+        TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+        
+        # Remove 'v' prefix
+        VERSION_NO_V=${TAG#v}
+        
+        # Set outputs
+        echo "version=$TAG" >> $GITHUB_OUTPUT
+        echo "version_no_v=$VERSION_NO_V" >> $GITHUB_OUTPUT
+        
+        echo "Tag: $TAG"
+        echo "Version (no v): $VERSION_NO_V"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Update Formula
       run: |
-        TAG="${{ steps.version.outputs.version }}"
-        VERSION="${{ steps.version.outputs.version_no_v }}"
+        TAG="${{ steps.latest_release.outputs.tag }}"
+        VERSION="${{ steps.latest_release.outputs.version_no_v }}"
         URL="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
           
         URL_ARM="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
