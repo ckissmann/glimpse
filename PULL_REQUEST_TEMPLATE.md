@@ -1,104 +1,34 @@
+# Pull Request
+
 ## Description
 
-<!-- Provide a brief description of your changes -->
+Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context.
 
-## Type of Change
+Fixes # (issue)
 
-<!-- Mark the relevant option with an "x" -->
+## Type of change
 
-- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
-- [ ] ✨ New feature (non-breaking change which adds functionality)
-- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] 📝 Documentation update
-- [ ] 🎨 Code style update (formatting, renaming)
-- [ ] ♻️ Code refactoring (no functional changes)
-- [ ] ⚡ Performance improvement
-- [ ] ✅ Test update
-- [ ] 🔧 Build configuration change
-- [ ] 🔄 CI/CD update
+Please delete options that are not relevant.
 
-## Changes Made
-
-<!-- Describe the changes in detail -->
-
-- 
-- 
-- 
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
 
 ## How Has This Been Tested?
 
-<!-- Describe the tests you ran to verify your changes -->
+Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. 
 
-- [ ] Unit tests
-- [ ] Integration tests
-- [ ] Manual testing
-- [ ] Tested on multiple platforms (specify): 
+- [ ] Test A
+- [ ] Test B
 
-**Test Configuration:**
-- OS: 
-- Rust version: 
-- Other relevant info: 
+## Checklist:
 
-## Screenshots / Examples
-
-<!-- If applicable, add screenshots or examples to help explain your changes -->
-
-**Before:**
-```
-<!-- Example output or behavior before your changes -->
-```
-
-**After:**
-```
-<!-- Example output or behavior after your changes -->
-```
-
-## Checklist
-
-<!-- Mark completed items with an "x" -->
-
-- [ ] My code follows the style guidelines of this project (`cargo fmt`)
+- [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings (`cargo clippy`)
+- [ ] My changes generate no new warnings
 - [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes (`cargo test`)
-- [ ] Any dependent changes have been merged and published
-- [ ] I have updated the CHANGELOG.md (if applicable)
-- [ ] My commits follow the [conventional commits](https://www.conventionalcommits.org/) specification
-
-## Commit Messages
-
-<!-- List your commit messages here to verify they follow conventional commits -->
-
-- 
-- 
-
-## Breaking Changes
-
-<!-- If this is a breaking change, describe the impact and migration path -->
-
-**What breaks:**
-
-**Migration guide:**
-
-## Related Issues
-
-<!-- Link related issues using "Closes #123" or "Fixes #456" -->
-
-Closes #
-Fixes #
-Related to #
-
-## Additional Notes
-
-<!-- Add any other context about the pull request here -->
-
-## Reviewer Notes
-
-<!-- Optional: Add specific things you want reviewers to focus on -->
-
----
-
-**By submitting this pull request, I confirm that my contribution is made under the terms of the MIT License.**
+- [ ] New and existing unit tests pass locally with my changes
+- [ ] Any dependent changes have been merged and published in downstream modules
