@@ -1,6 +1,0 @@
-services:
-  dpkg:
-    build: .
-    command: "sh /glimpse/docker/dpkg.sh"
-    volumes:
-      - ./host:/glimpse/host:rw
