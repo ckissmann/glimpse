@@ -52,7 +52,38 @@ impl CommitInfo {
     }
 }
 
+fn pre_actions() -> bool {
+    let res: bool = {
+        let test_result = Command::new("cargo").args(["test"]).status();
+
+        if test_result.is_err() || !test_result.unwrap().success() {
+            false
+        } else {
+            let lint_result = Command::new("cargo")
+                .args([
+                    "clippy",
+                    "--all-targets",
+                    "--all-features",
+                    "--",
+                    "-D",
+                    "warnings",
+                ])
+                .status();
+
+            lint_result.is_ok() && lint_result.unwrap().success()
+        }
+    };
+
+    res
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let pre_actions_state = pre_actions();
+
+    if !pre_actions_state {
+        panic!("Pre actions not successed")
+    }
+
     let theme = ColorfulTheme::default();
 
     println!("🚀 Semantic Commit Generator\n");

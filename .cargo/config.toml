@@ -1,4 +1,5 @@
 [alias]
 commit = "run --bin commit"
 c = "run --bin commit"
+setup = "run --bin setup"
 lint = "clippy --all-targets --all-features"

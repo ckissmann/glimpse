@@ -1,7 +1,0 @@
-#!/bin/bash
-set -e
-
-echo "🔍 Running cargo lint..."
-cargo lint
-
-echo "✅ Lint passed!"
