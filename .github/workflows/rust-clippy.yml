@@ -1,6 +1,6 @@
 on:
   pull_request:
-    branches: [ "release" ]
+    branches: [ "release", "master" ]
 
 name: Clippy check
 
