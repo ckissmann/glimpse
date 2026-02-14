@@ -57,8 +57,20 @@ jobs:
     - name: Get latest release tag
       id: latest_release
       run: |
-        TAG="${{ steps.version.outputs.version }}"
-        VERSION="${{ steps.version.outputs.version_no_v }}"
+        TAG=$(gh release list --repo ${{ github.repository }} --limit 1 --json tagName --jq '.[0].tagName')
+        VERSION_NO_V=${TAG#v}
+        
+        echo "version=$TAG" >> $GITHUB_OUTPUT
+        echo "version_no_v=$VERSION_NO_V" >> $GITHUB_OUTPUT
+        
+        echo "📦 Latest release: $TAG"
+        echo "📦 Version: $VERSION_NO_V"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Update Formula
+      run: |
+        TAG="${{ steps.latest_release.outputs.tag }}"
+        VERSION="${{ steps.latest_release.outputs.version_no_v }}"
         URL="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
           
         URL_ARM="https://github.com/ckissmann/glimpse/archive/refs/tags/${TAG}.tar.gz"
