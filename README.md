@@ -2,7 +2,7 @@
 
 A simple command-line tool to view Git branches across multiple repositories in subfolders.
 
-![glimpse demo](img/image.png)
+![glimpse demo](assets/img/image.png)
 
 ## Overview
 
